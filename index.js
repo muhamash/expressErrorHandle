@@ -5,7 +5,20 @@ const port = process.env.PORT || 5000;
 app.get( '/', ( req, res ) =>
 {
     // res.send( 'Hello Express.js!' );
-    res.send(a)
+    // res.send(a)
+    for ( let i = 0; i < 10; i++ )
+    {
+        if(i === 9)
+        {
+           next( new Error( 'This is an error! get route --> for loop' ) );
+        }
+        else
+        {
+            res.write('Hello Express.js! ' + i + '\n');
+        }
+    }
+
+    res.end();
 } );
 
 // app.get( '/api', ( req, res ) =>
@@ -19,20 +32,27 @@ app.use( ( req, res, next ) =>
     // next();
     // throw new Error( 'This is an error!' );
     // next( new Error( 'This is an error!' ) );
-    res.status(404).send( '404 URL Not Found' );
+    // res.status(404).send( '404 URL Not Found' );
+    next( 'bhai error hoise' );
 } );
 
 app.use( ( error, req, res, next ) =>
 {
     // console.log( error );
     // res.status( 500 ).send( 'bhai error hoise' );
-    if ( error && error.message )
+    if ( res.headersSent )
     {
-        res.send( error.message );
-    }
-    else
+        next( 'problem in headers' );
+    } else
     {
-        res.send( 'bhai error hoise' );
+        if ( error && error.message )
+        {
+            res.send( error.message );
+        }
+        else
+        {
+            res.send( 'bhai error hoise' );
+        }
     }
 } );
 
